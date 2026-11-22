@@ -1,9 +1,11 @@
 # my-docs
 
-个人技术文档站：用 Markdown + MkDocs Material 编写，通过 GitHub Actions 自动构建并部署到 GitHub Pages。
+## 项目简介
+
+我的个人技术文档站。文档用 Markdown 编写，MkDocs Material 负责构建成静态网站，GitHub Actions 在每次推送到 `main` 时自动构建并部署到 GitHub Pages，不需要手工上传或维护额外的发布分支。
 
 - **网站地址**：https://orihamaru.github.io/my-docs/
-- **个人实验报告**：[report/README.md](report/README.md)
+- **个人实验报告**：[个人实验报告](report/README.md)
 - **文档源码**：`docs/`（四个页面：首页 / 关于 / 使用指南 / API 参考）
 
 ## 目录结构
