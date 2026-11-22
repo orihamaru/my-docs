@@ -35,3 +35,8 @@ python -m mkdocs serve
 ```
 
 更多命令见 [使用指南](guide.md)，仓库结构与报告见 [project README](https://github.com/orihamaru/my-docs)。
+
+
+## 自动部署验证
+
+自动部署验证：这段文字是我在 2026-11-22 第二次推送后新增的内容，用来确认 push 会自动触发构建并更新网站。
