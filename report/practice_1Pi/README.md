@@ -25,28 +25,26 @@ pi
 
 安装正常结束，`pi --version` 输出 1.6.0，并能启动交互界面。截图包含版本和本次工作目录。本次安装的只是 Pi 客户端，模型权重并不部署到本机，调用的是 DeepSeek 的在线 API。
 
-补充说明：Pi 启动时会用到 `fd`、`rg` 两个搜索工具，缺失时它会尝试自动下载；本机网络下该下载超时，所以我把两个可执行文件放到了 `.pi\agent\bin`，此后启动不再报警，`@` 选文件的候选列表也能正常出现。
+补充说明：Pi 启动时会用到 `fd`、`rg` 两个搜索工具，缺失时它会尝试自动下载；本机网络下该下载超时，所以把两个可执行文件放到了 `.pi\agent\bin`，此后启动不再报警。
 
 ![Pi 1.6.0 已启动，工作目录 pi-test](images/s1.png)
 
 ## 二、配置模型并完成会话
 
-在 Pi 中运行 `/login`，选择 DeepSeek，通过 API Key 完成配置。密钥由本人在 Pi 内填写，未写入作业目录；该配置写入的是工作区的 `.pi\agent\auth.json`，截图中不包含密钥。
+在 Pi 中运行 `/login`，选择 DeepSeek，通过 API Key 完成配置。
 
-配置完成后默认模型为 `deepseek-v4-pro`，发送「你好」，收到正常的中文回复，底部状态栏显示当前模型与 token、费用信息，证明客户端与模型链路都已打通。
+配置完成后默认模型为 `deepseek-v4-pro`，发送「你好」，收到中文回复，底部状态栏显示当前模型与 token、费用信息。
 
 ![配置完成后完成一次会话](images/s2.png)
 
 ## 三、切换模型和思考级别
 
-先使用 `deepseek-v4-pro`，思考级别为 `high`，发送「请用一句话解释持续集成」，收到正常回复。
+先使用 `deepseek-v4-pro`，思考级别为 `high`，发送「请用一句话解释持续集成」，收到回复。
 
-随后通过 `Ctrl+L`（等价于 `/model`）打开模型选择器，切换到 `deepseek-flash`；通过 `Shift+Tab`（等价于 `/thinking`）把思考级别由 `high` 调到 `low`。再次提问同一个问题，收到正常回复。
+随后通过 `Ctrl+L`（等价于 `/model`）打开模型选择器，切换到 `deepseek-flash`；通过 `Shift+Tab`（等价于 `/thinking`）把思考级别由 `high` 调到 `low`。再次提问同一个问题，收到回复。
 
-| 项目 | 切换前 | 切换后 |
-| --- | --- | --- |
-| 模型 | deepseek-v4-pro | deepseek-flash |
-| 思考级别 | high | low |
+切换前 deepseek-v4-pro high
+切换后 deepseek-flash low
 
 ![切换前：deepseek-v4-pro · high](images/s3-before.png)
 
@@ -92,9 +90,7 @@ cd D:\study\kaiyvanruanjian
 pi install npm:pi-web-access -l --approve
 ```
 
-安装输出 `added 211 packages in 2m`、`Installed npm:pi-web-access`，退出码 0；项目级配置写入工作区 `.pi\settings.json` 的 `packages` 字段。
-
-重新在终端单独运行 `pi`（首次需确认信任项目目录），启动页 `[Extensions]` 区域列出 `pi-web-access:dist`，说明插件已被加载。
+重新在终端单独运行 `pi`（首次需确认信任项目目录），启动页 `[Extensions]` 区域列出 `pi-web-access:dist`，插件已加载。
 
 ![插件安装成功输出](images/s6-install.png)
 
@@ -104,7 +100,7 @@ pi install npm:pi-web-access -l --approve
 
 ![插件功能调用结果](images/s6-trial.png)
 
-## 七、安装并调用 PPT Skill
+## 七、AI 进行安装并调用 PPT Skill
 
 从 `anthropics/skills`（main 分支，commit `e4bb5d9`）下载 `skills/pptx` 整个目录，安装到当前项目的 `.pi\skills\pptx`，共 59 个文件：`SKILL.md`、`LICENSE.txt`、`scripts/add_slide.py`、`scripts/thumbnail.py`、`scripts/clean.py`、`scripts/slide_text.py`、`scripts/apply_theme.js` 以及 `scripts/office/`（`soffice.py`、`validate.py`、`helpers/`、`schemas/`、`validators/`）。未使用 `pi install npm:pptx`，也没有自动安装依赖。
 
@@ -126,8 +122,5 @@ Pi 展开 `[skill] pptx` 调用块并回答：名称为 `pptx`；用途是创建
 
 ## 附：遇到的问题与处理
 
-- **官方安装脚本无法下载**：PowerShell/.NET 的 TLS 报 `SEC_E_NO_CREDENTIALS`，改用 README 中的 npm 安装方式（加 `--ignore-scripts`，与官方安装器的做法一致）。
-- **npm 缓存与临时文件写了 C 盘**：npm 默认缓存目录被工作区策略拒绝，改为 `--cache D:\study\kaiyvanruanjian\.npm-cache`；Pi 的临时目录也指向工作区，避免再往 C 盘写。
-- **Pi 的工具调用需要真实子进程**：受限环境下 `fd`、`rg`、`bash` 调用失败会导致 `@` 候选列表为空，改在普通终端中运行 Pi 后恢复正常（工作目录仍在工作区）。
-- **`Alt+V` 粘贴图片的实际行为**：当前版本会把剪贴板图片落成临时 PNG 并在输入框插入图片路径，发送后由 `read` 工具读图，识别结果正确。
-- **插件无密钥抓取**：`pi-web-access` 的部分抓取提供方需要密钥，在 `.pi\agent\web-search.json` 中设置 `fetchRouting.allowRemoteHostedProviders = true` 后可用无密钥方案，也可直接用 `raw` 模式取回页面。
+- npm 缓存与临时文件写了 C 盘：npm 默认缓存目录被工作区策略拒绝，改为 `--cache D:\study\kaiyvanruanjian\.npm-cache`；Pi 的临时目录也指向工作区，避免再什么时候偷吃我C盘本就不多了的空间。
+- Pi 的工具调用需要真实子进程：受限环境下 `fd`、`rg`、`bash` 调用失败会导致 `@` 候选列表为空，改在普通终端中运行 Pi 后恢复正常（工作目录仍在工作区）。
